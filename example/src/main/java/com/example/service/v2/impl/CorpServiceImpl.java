@@ -368,7 +368,7 @@ public class CorpServiceImpl implements CorpService {
                     "where corp_id = "+corp+" " ;
 
             ResultUtil deleteResult=dbHelperService.delete(deleteSql,DATASOURCE_POSTGRES);
-            if(HttpStatus.OK.value()!= (int)deleteResult.get(CODE)){
+            if(!SUCCESS_CODE.equals(result.get(CODE).toString())){
                 message=MessageUtil.getMessage(Message.QUERY_ERROR.getCode());
                 logger.error(message);
                 return ResultUtil.error(message);
