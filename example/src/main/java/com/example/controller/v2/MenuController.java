@@ -25,11 +25,8 @@ import java.util.List;
 @RequestMapping("v2/menuManage")
 @RestController("MenuV2Controller")
 public class MenuController {
-
 	@Resource(name = "MenuV2Service")
 	MenuService menuService;
-
-
 
 	/**
 	 * 分页获取菜单信息
@@ -68,7 +65,8 @@ public class MenuController {
 	 */
 	@PostMapping("/menuList")
 	public ResultUtil addMenuList(@RequestBody List<MenuEntity> menuEntityList){
-		return menuService.insertMenuInfoList(menuEntityList);
+		ResultUtil resultUtil=menuService.insertMenuInfoList(menuEntityList);
+		return resultUtil;
 	}
 
 	/**
