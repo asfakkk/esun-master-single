@@ -4,8 +4,6 @@ import com.example.entity.DomainMstr;
 import com.example.utils.ResultUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 
-
-
 import java.util.List;
 import java.util.Map;
 
@@ -96,6 +94,19 @@ public interface DomainService {
      * @return
      */
    ResultUtil exportDomainInfo(String domainDomain);
+    /**
+     * 获取用户域信息
+     * @param user
+     * @return
+     */
+    ResultUtil getUserdomainInfo(String user);
 
+    /**
+     * 更新用户域
+     * @param user 用户名
+     * @param domainMstrList 域信息列表
+     * @return 返回结果工具类
+     */
+    ResultUtil updateUserDomain(String user, List<DomainMstr> domainMstrList);
 
 }

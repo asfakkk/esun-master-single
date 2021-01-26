@@ -10,7 +10,10 @@ public enum DomainMessage {
     DOMAIN_ADD_SUCCESS("domain_add_success","添加域成功"),
     DOMAIN_ADD_ERROR("domain_add_error","添加域失败"),
     DOMAIN_IS_EXIST("domain_is_exist","域已存在"),
-    DOMAIN_NOT_EXIST("domain_not_exist","域不存在");
+    DOMAIN_NOT_EXIST("domain_not_exist","域不存在"),
+    DOMAIN_EXPORT_SUCCESSS("domain_export_success","导出域信息成功"),
+    DOMAIN_EXPORT_ERROR("domain_export_error","导出域信息失败");
+
 
     //信息码
     private final String code;
