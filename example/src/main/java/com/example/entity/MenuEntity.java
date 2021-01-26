@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2021-01-04 09:39:27
  */
-public class MenuEntity implements Serializable {
+public class MenuEntity extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 533741998239579389L;
 
     private String guid;

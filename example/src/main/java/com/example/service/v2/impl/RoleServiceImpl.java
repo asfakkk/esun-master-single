@@ -1,6 +1,7 @@
 package com.example.service.v2.impl;
 
 import com.example.constant.MenuMessage;
+import com.example.entity.CorpMstr;
 import com.example.entity.RoleMstr;
 import com.example.exception.CustomHttpException;
 import com.example.service.feign.DbHelperService;
@@ -162,16 +163,14 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public ResultUtil insertRoleInfoList(List<RoleMstr> roleMstrList) {
-        List<Map<String,Object>> resultList=new ArrayList<>(roleMstrList.size());
         String message;
-        for (int i = 0; i < roleMstrList.size(); i++) {
-            ResultUtil result=insertRoleInfo(roleMstrList.get(i));
-            Map<String,Object> resultMap=new HashMap<>();
-            resultMap.put(roleMstrList.get(i).getRoleName(),result);
-            resultList.add(resultMap);
+        for (RoleMstr roleMstr : roleMstrList) {
+            ResultUtil result = insertRoleInfo(roleMstr);
+            roleMstr.setResult(result.get("msg").toString());
+            roleMstr.setCode(result.get("code").toString());
         }
         message=MessageUtil.getMessage(MenuMessage.ROLE_ADD_SUCCESS.getCode());
-        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(roleMstrList);
     }
 
     /**
@@ -181,16 +180,14 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public ResultUtil deleteRoleInfolist(List<RoleMstr> roleMstrList) {
-        List<Map<String,Object>> resultList=new ArrayList<>(roleMstrList.size());
         String message;
-        for (int i = 0; i < roleMstrList.size(); i++) {
-            ResultUtil result=deleteRoleInfo(roleMstrList.get(i));
-            Map<String,Object> resultMap=new HashMap<>();
-            resultMap.put(roleMstrList.get(i).getRoleName(),result);
-            resultList.add(resultMap);
+        for (RoleMstr roleMstr : roleMstrList) {
+            ResultUtil result = deleteRoleInfo(roleMstr);
+            roleMstr.setResult(result.get("msg").toString());
+            roleMstr.setCode(result.get("code").toString());
         }
         message=MessageUtil.getMessage(MenuMessage.ROLE_DELETE_SUCCESS.getCode());
-        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(roleMstrList);
     }
 
 
@@ -201,16 +198,14 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public ResultUtil updateRoleInfolist(List<RoleMstr> roleMstrList) {
-        List<Map<String,Object>> resultList=new ArrayList<>(roleMstrList.size());
         String message;
-        for (int i = 0; i < roleMstrList.size(); i++) {
-            ResultUtil result=updateRoleInfo(roleMstrList.get(i));
-            Map<String,Object> resultMap=new HashMap<>();
-            resultMap.put(roleMstrList.get(i).getRoleName(),result);
-            resultList.add(resultMap);
+        for (RoleMstr roleMstr : roleMstrList) {
+            ResultUtil result = updateRoleInfo(roleMstr);
+            roleMstr.setResult(result.get("msg").toString());
+            roleMstr.setCode(result.get("code").toString());
         }
         message=MessageUtil.getMessage(MenuMessage.ROLE_UPDATE_SUCCESS.getCode());
-        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(roleMstrList);
     }
 
 

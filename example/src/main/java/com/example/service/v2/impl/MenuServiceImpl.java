@@ -2,6 +2,7 @@ package com.example.service.v2.impl;
 
 import com.example.constant.MenuMessage;
 import com.example.constant.Message;
+import com.example.entity.CorpMstr;
 import com.example.entity.MenuEntity;
 import com.example.entity.RoleMstr;
 import com.example.exception.CustomHttpException;
@@ -256,16 +257,14 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ResultUtil updateMenuInfoList(List<MenuEntity> menuEntityList) {
-		List<Map<String, Object>> resultList = new ArrayList<>(menuEntityList.size());
 		String message;
-		for (int i = 0; i < menuEntityList.size(); i++) {
-			ResultUtil result = updateMenuInfo(menuEntityList.get(i));
-			Map<String, Object> resultMap = new HashMap<>();
-			resultMap.put(menuEntityList.get(i).getMenuName(), result);
-			resultList.add(resultMap);
+		for (MenuEntity menuEntity : menuEntityList) {
+			ResultUtil result = updateMenuInfo(menuEntity);
+			menuEntity.setResult(result.get("msg").toString());
+			menuEntity.setCode(result.get("code").toString());
 		}
 		message = MessageUtil.getMessage(MenuMessage.MENU_UPDATE_SUCCESS.getCode());
-		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(menuEntityList);
 	}
 
 	/**
@@ -276,16 +275,14 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ResultUtil deleteMenuInfoList(List<MenuEntity> menuEntityList) {
-		List<Map<String, Object>> resultList = new ArrayList<>(menuEntityList.size());
 		String message;
-		for (int i = 0; i < menuEntityList.size(); i++) {
-			ResultUtil result = deleteMenuInfo(menuEntityList.get(i));
-			Map<String, Object> resultMap = new HashMap<>();
-			resultMap.put(menuEntityList.get(i).getMenuName(), result);
-			resultList.add(resultMap);
+		for (MenuEntity menuEntity : menuEntityList) {
+			ResultUtil result = deleteMenuInfo(menuEntity);
+			menuEntity.setResult(result.get("msg").toString());
+			menuEntity.setCode(result.get("code").toString());
 		}
 		message = MessageUtil.getMessage(MenuMessage.MENU_DELETE_SUCCESS.getCode());
-		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(menuEntityList);
 	}
 
 	/**
@@ -296,16 +293,14 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ResultUtil insertMenuInfoList(List<MenuEntity> menuEntityList) {
-		List<Map<String, Object>> resultList = new ArrayList<>(menuEntityList.size());
 		String message;
-		for (int i = 0; i < menuEntityList.size(); i++) {
-			ResultUtil result = insertMenuInfo(menuEntityList.get(i));
-			Map<String, Object> resultMap = new HashMap<>(2);
-			resultMap.put(menuEntityList.get(i).getMenuName(), result);
-			resultList.add(resultMap);
+		for (MenuEntity menuEntity : menuEntityList) {
+			ResultUtil result = insertMenuInfo(menuEntity);
+			menuEntity.setResult(result.get("msg").toString());
+			menuEntity.setCode(result.get("code").toString());
 		}
 		message = MessageUtil.getMessage(MenuMessage.MENU_ADD_SUCCESS.getCode());
-		return  ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(menuEntityList);
 	}
 
 	/**
