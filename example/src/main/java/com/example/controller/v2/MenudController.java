@@ -104,7 +104,7 @@ public class MenudController {
     }
 
     /**
-     * 导入公司信息
+     * 导入菜单标签信息
      *
      * @param file Excel文件
      * @return 结果封装类
@@ -125,7 +125,7 @@ public class MenudController {
     }
 
     /**
-     * 导出公司信息
+     * 导出菜单标签信息
      *
      * @param menudCorp
      * @param menudNbr
