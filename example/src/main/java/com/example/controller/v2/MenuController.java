@@ -2,6 +2,7 @@ package com.example.controller.v2;
 
 import com.example.entity.MenuEntity;
 import com.example.service.v2.MenuService;
+import com.example.utils.FileUtils;
 import com.example.utils.ResultUtil;
 import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -119,6 +120,15 @@ public class MenuController {
 	public void exportMenuList(@RequestParam(value = "menuSelect",required = false,defaultValue = "")String menuSelect,
 	                           @RequestParam(value = "menuNbr",required = false,defaultValue = "")String menuNbr){
 		menuService.exportUserInfo(menuNbr,menuSelect);
+	}
+
+	/**
+	 * 获取导入模板
+	 */
+	@GetMapping("template")
+	public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/menu.xls")String path){
+		FileUtils fileUtils=new FileUtils();
+		fileUtils.downLoad(path);
 	}
 
 	/**

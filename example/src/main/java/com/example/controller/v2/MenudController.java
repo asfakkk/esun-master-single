@@ -148,8 +148,7 @@ public class MenudController {
      *
      */
     @GetMapping("template")
-    public void getTemplate(){
-        String path="E:/template/menud.xls";
+    public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/menud.xls")String path){
         FileUtils fileUtils=new FileUtils();
         fileUtils.downLoad(path);
     }

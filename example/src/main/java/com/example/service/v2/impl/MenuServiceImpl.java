@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,8 @@ public class MenuServiceImpl implements MenuService {
 	private static Logger logger = LoggerFactory.getLogger(MenuServiceImpl.class);
 	public static final String SUCCESS_CODE = "10000";
 	private static final String DATASOURCE_POSTGRES = "postgres";
+	@Value("${file.disk.path}")
+	String fileDiskPath;
 	@Autowired
 	@Lazy
 	DbHelperService dbHelperService;
@@ -387,8 +390,7 @@ public class MenuServiceImpl implements MenuService {
 		titleList.add("menuSelect");
 		titleList.add("menuProgram");
 		titleList.add("menuName");
-		String diskPath = "E:/test/";
-		String path = ExcelUtils.createMapListExcel(list, diskPath, titleList);
+		String path = ExcelUtils.createMapListExcel(list, fileDiskPath, titleList);
 		FileUtils fileUtils = new FileUtils();
 		fileUtils.downLoad(path);
 	}

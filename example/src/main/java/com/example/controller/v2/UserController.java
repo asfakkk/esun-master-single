@@ -188,8 +188,7 @@ public class UserController {
 	 * 获取导入模板
 	 */
 	@GetMapping("template")
-	public void getTemplate(){
-		String path="E:/template/user.xls";
+	public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/user.xls")String path){
 		FileUtils fileUtils=new FileUtils();
 		fileUtils.downLoad(path);
 	}

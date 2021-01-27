@@ -132,8 +132,7 @@ public class DomainController {
      * 获取导入模板
      */
     @GetMapping("template")
-    public void getTemplate(){
-        String path="E:/template/domain.xls";
+    public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/domain.xls")String path){
         FileUtils fileUtils=new FileUtils();
         fileUtils.downLoad(path);
     }

@@ -55,6 +55,9 @@ public  class DomainServiceImpl implements DomainService {
     public static final String CODE = "code";
     public static final String SUCCESS_CODE = "10000";
 
+    @Value("${file.disk.path}")
+    String fileDiskPath;
+
     @Override
     public ResultUtil getDomainInfoList(int pageIndex, int pageSize, String domain, List<Map<String, Object>> criteriaList) {
         String sortString = getSortString(criteriaList);
@@ -291,8 +294,7 @@ public  class DomainServiceImpl implements DomainService {
         titlelist.add("domainMaxUsers");
         titlelist.add("domainAdmin");
 
-        String diskPath = "D:/test/";
-        String path = ExcelUtils.createMapListExcel(list, diskPath, titlelist);
+        String path = ExcelUtils.createMapListExcel(list, fileDiskPath, titlelist);
         FileUtils fileUtils = new FileUtils();
         fileUtils.downLoad(path);
 
