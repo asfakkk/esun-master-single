@@ -17,39 +17,39 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController("DomainV2Controller")
-@RequestMapping("v2/domainManage")
+@RequestMapping("v2/domainManager")
 public class DomainController {
     @Resource(name = "DomainV2Service")
     DomainService domainService;
 
     @GetMapping("domainList")
     public ResultUtil getDomain(@RequestParam(value="pageIndex",required = false,defaultValue = "1")int pageIndex ,
-                                @RequestParam(value="pageSize",required = false,defaultValue = "5")int pageSize,
+                                @RequestParam(value="pageSize",required = false,defaultValue = "10")int pageSize,
                                 @RequestParam(value="criteriaList",required = false,defaultValue ="[]" )String criteriaList,
-                                @RequestParam(value ="domain",required = false,defaultValue = "")String domain){
+                                @RequestParam(value ="domainDomain",required = false,defaultValue = "")String domainDomain){
         JSONArray criteriaArray = JSONArray.fromObject(criteriaList);
-        Optional criteriaOptional;
+        String criteria;
         String sortParam;
         for (int i = 0; i < criteriaArray.size(); i++) {
             Map<String, Object> listMap = (Map<String, Object>) criteriaArray.get(i);
-            criteriaOptional = Optional.ofNullable(listMap.get("criteria"));
-            switch (criteriaOptional.orElse("").toString()) {
+            criteria = listMap.get("criteria").toString();
+            switch (criteria) {
                 case "domainName":
                     sortParam = "domain_name";
                     break;
                 case "domainCorp":
                     sortParam = "domain_corp";
                     break;
-                case "shortName":
+                case "domainSname":
                     sortParam = "domain_sname";
                     break;
-                case "dataBase":
+                case "domainDb":
                     sortParam = "domain_db";
                     break;
-                case "active":
+                case "domainActive":
                     sortParam = "domain_active";
                     break;
-                case "domainProPath":
+                case "domainPropath":
                     sortParam = "domain_propath";
                     break;
                 case "domainType":
@@ -61,14 +61,14 @@ public class DomainController {
                 case "domainAdmin":
                     sortParam = "domain_admin";
                     break;
-                case "maxUser":
+                case "domainMaxUsers":
                     sortParam = "domain_max_users";
                     break;
                 default:
                     sortParam = "domain_domain";
             }
             listMap.put("criteria", sortParam);
-        }return domainService.getDomainInfoList(pageIndex,pageSize,domain,criteriaArray);
+        }return domainService.getDomainInfoList(pageIndex,pageSize,domainDomain,criteriaArray);
     }
     /**
      * 批量插入信息
@@ -132,7 +132,8 @@ public class DomainController {
      * 获取导入模板
      */
     @GetMapping("template")
-    public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/domain.xls")String path){
+    public void getTemplate(){
+        String path="E:/template/domain.xls";
         FileUtils fileUtils=new FileUtils();
         fileUtils.downLoad(path);
     }
@@ -148,13 +149,13 @@ public class DomainController {
     /**
      * 更新用户域信息
      *
+     * @param domainMstrList
      * @param user
-     * @param domainMstr
      * @return
      */
     @PutMapping ("userDomain")
-    public ResultUtil updateUserDomain(@RequestParam (value = "user",required = false,defaultValue = "")String user,
-                                       @RequestParam  List <DomainMstr> domainMstr) {
-        return null;
+    public ResultUtil updateUserDomain(@RequestBody List<DomainMstr> domainMstrList,
+                                       @RequestParam("user") String user) {
+        return domainService.updateUserDomainList(domainMstrList,user);
     }
 }
