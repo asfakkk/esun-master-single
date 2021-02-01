@@ -32,10 +32,10 @@ public class MenudController {
      * @date 2020-10-13 17:06
      */
     @GetMapping("/menud")
-    public ResultUtil getMenudListPage(@RequestParam(value = "menudSelect",required = false,defaultValue = "")String menudSelect,
-                                       @RequestParam(value = "menudCorp",required = false,defaultValue = "")String menudCorp,
-                                       @RequestParam(value = "menudNbr",required = false,defaultValue = "")String menudNbr,
-                                       @RequestParam(value = "menudLang",required = false,defaultValue = "")String menudLang,
+    public ResultUtil getMenudListPage(@RequestParam(value = "menudSelect",required = false,defaultValue = "")String menuSelect,
+                                       @RequestParam(value = "menudCorp",required = false,defaultValue = "")String menuCorp,
+                                       @RequestParam(value = "menudNbr",required = false,defaultValue = "")String menuNbr,
+                                       @RequestParam(value = "menudLang",required = false,defaultValue = "")String menuLang,
                                        @RequestParam(value = "pageIndex",required = false,defaultValue = "1")int pageIndex,
                                        @RequestParam(value = "pageSize",required = false,defaultValue = "10")int pageSize,
                                        @RequestParam(value = "criteriaList",required = false,defaultValue = "[]")String criteriaList){
@@ -49,16 +49,16 @@ public class MenudController {
             Map<String, Object> listMap = (Map<String, Object>) criteriaArray.get(i);
             criteriaOptional = Optional.ofNullable(listMap.get("criteria"));
             switch (criteriaOptional.orElse("").toString()) {
-                case "menudCorp":
+                case "menuCorp":
                     sortParam = "menud_corp";
                     break;
-                case "menudNbr":
+                case "menuNbr":
                     sortParam = "menud_nbr";
                     break;
-                case "menudSelect":
+                case "menuSelect":
                     sortParam = "menud_select";
                     break;
-                case "menudLang":
+                case "menuLang":
                     sortParam = "menud_lang";
                     break;
                 default:
@@ -66,7 +66,7 @@ public class MenudController {
             }
             listMap.put("criteria", sortParam);
         }
-        return menudService.getMenudInfoList(pageIndex, pageSize,menudCorp,menudNbr,menudSelect,menudLang,criteriaArray);
+        return menudService.getMenudInfoList(pageIndex, pageSize,menuCorp,menuNbr,menuSelect,menuLang,criteriaArray);
     }
     /**
      * 添加菜单标签
