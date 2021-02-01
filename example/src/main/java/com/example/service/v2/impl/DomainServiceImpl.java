@@ -2,7 +2,6 @@ package com.example.service.v2.impl;
 
 import com.example.constant.DomainMessage;
 import com.example.constant.MenuMessage;
-import com.example.constant.Message;
 import com.example.entity.DomainMstr;
 import com.example.exception.CustomHttpException;
 import com.example.service.feign.DbHelperService;
@@ -56,12 +55,15 @@ public  class DomainServiceImpl implements DomainService {
     public static final String CODE = "code";
     public static final String SUCCESS_CODE = "10000";
 
+    @Value("${file.disk.path}")
+    String fileDiskPath;
+
     @Override
     public ResultUtil getDomainInfoList(int pageIndex, int pageSize, String domain, List<Map<String, Object>> criteriaList) {
         String sortString = getSortString(criteriaList);
-        String sql = "select domain_domain as \"domain\", domain_name as \"domainName\", domain_corp as \"domainCorp\", domain_sname as \"shortName\", " +
-                "domain_db as \"dataBase\", domain_active as \"active\", domain_propath as \"domainProPath\", " +
-                "domain_type as \"domainType\", domain_max_users as \"maxUser\", domain_admin as  \"domainAdmin\" " +
+        String sql = "select domain_domain as \"domainDomain\", domain_name as \"domainName\", domain_corp as \"domainCorp\", domain_sname as \"domainSname\", " +
+                "domain_db as \"domainDb\", domain_active as \"domainActive\", domain_propath as \"domainPropath\", " +
+                "domain_type as \"domainType\", domain_max_users as \"domainMaxUsers\", domain_admin as  \"domainAdmin\" " +
                 "from domain_mstr " +
                 "where domain_domain ilike '%" + domain + "%' " +
                 "order by " + sortString + " ";
@@ -74,8 +76,10 @@ public  class DomainServiceImpl implements DomainService {
         }
         ArrayList list = (ArrayList) result.get("result");
         Map<String, Object> dataMap = new HashMap<>(10);
+        int pageCount = (int) result.get("pageCount");
         int count = (int) result.get("count");
         dataMap.put("list", list);
+        dataMap.put("pageCount", pageCount);
         dataMap.put("count", count);
         message = MessageUtil.getMessage(DomainMessage.DOMAIN_GET_SUCCESS.getCode());
         logger.info(message);
@@ -88,15 +92,15 @@ public  class DomainServiceImpl implements DomainService {
         boolean domainExist = checkDomainExist(domainMstr.getDomainDomain());
         if (domainExist) {
             message = MessageUtil.getMessage(DomainMessage.DOMAIN_IS_EXIST.getCode());
-            logger.warn(domainMstr.getDomainDomain()+":"+message);
+            logger.warn(domainMstr.getDomainDomain() + ":" + message);
             return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
         }
         String sql = "insert into domain_mstr " +
                 "( domain_corp, domain_domain, domain_name, domain_sname, domain_db, domain_active, domain_propath, " +
                 " domain_type, domain_max_users, domain_admin)" + " values('" + domainMstr.getDomainCorp() + "','" + domainMstr.getDomainDomain() + "','" + domainMstr.getDomainName() + "','"
-                + domainMstr.getDomainSname()+"','" + domainMstr.getDomainDb() + "','" + domainMstr.getDomainActive() +
+                + domainMstr.getDomainSname() + "','" + domainMstr.getDomainDb() + "','" + domainMstr.getDomainActive() +
                 "','" + domainMstr.getDomainPropath() + "','" + domainMstr.getDomainType() + "','"
-                + domainMstr.getDomainMaxUsers() +"','"+ domainMstr.getDomainAdmin() + "') ;";
+                + domainMstr.getDomainMaxUsers() + "','" + domainMstr.getDomainAdmin() + "') ;";
 
 
         ResultUtil result = dbHelperService.insert(sql, DATASOURCE_POSTGRES);
@@ -115,14 +119,14 @@ public  class DomainServiceImpl implements DomainService {
         boolean domainExist = checkDomainExist(domainMstr.getDomainDomain());
         if (!domainExist) {
             message = MessageUtil.getMessage(DomainMessage.DOMAIN_NOT_EXIST.getCode());
-            logger.warn(domainMstr.getDomainDomain() +":" + message);
+            logger.warn(domainMstr.getDomainDomain() + ":" + message);
             return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
         }
         String sql = "update domain_mstr set domain_domain = '" + domainMstr.getDomainDomain() + "', domain_corp = '" + domainMstr.getDomainCorp() + "', domain_name= '" + domainMstr.getDomainName() + "',domain_sname = '" +
-                domainMstr.getDomainSname() +  "',domain_db = '" + domainMstr.getDomainDb() + "', domain_active= '" + domainMstr.getDomainActive() + "', domain_propath= '" + domainMstr.getDomainPropath() + "'," +
+                domainMstr.getDomainSname() + "',domain_db = '" + domainMstr.getDomainDb() + "', domain_active= '" + domainMstr.getDomainActive() + "', domain_propath= '" + domainMstr.getDomainPropath() + "'," +
                 "domain_type = '" + domainMstr.getDomainType() + "', domain_max_users='" + domainMstr.getDomainMaxUsers() + "', domain_admin='"
-                + domainMstr.getDomainAdmin() + "' "+
-                 "where lower(domain_domain)= lower('"+domainMstr.getDomainDomain()+"');";
+                + domainMstr.getDomainAdmin() + "' " +
+                "where lower(domain_domain)= lower('" + domainMstr.getDomainDomain() + "');";
         ResultUtil result = dbHelperService.update(sql, DATASOURCE_POSTGRES);
 
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
@@ -141,15 +145,15 @@ public  class DomainServiceImpl implements DomainService {
         boolean domainExist = checkDomainExist(domainMstr.getDomainDomain());
         if (!domainExist) {
             message = MessageUtil.getMessage(DomainMessage.DOMAIN_NOT_EXIST.getCode());
-            logger.warn(domainMstr.getDomainDomain()+":"+ message);
-            return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+            logger.warn(domainMstr.getDomainDomain() + ":" + message);
+            return ResultUtil.error(message);
         }
-        String sql = "delete from domain_mstr where lower(domain_domain)=lower('"+domainMstr.getDomainDomain()+"')";
+        String sql = "delete from domain_mstr where lower(domain_domain)=lower('" + domainMstr.getDomainDomain() + "')";
         ResultUtil result = dbHelperService.delete(sql, DATASOURCE_POSTGRES);
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
             message = MessageUtil.getMessage(DomainMessage.DOMAIN_DELETE_ERROR.getCode());
             logger.error(message);
-            return ResultUtil.error(message,Thread.currentThread().getStackTrace()[1].getMethodName());
+            return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
         }
         message = MessageUtil.getMessage(DomainMessage.DOMAIN_DELETE_SUCCESS.getCode());
         return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -157,51 +161,46 @@ public  class DomainServiceImpl implements DomainService {
 
     @Override
     public ResultUtil deleteDomainInfoList(List<DomainMstr> domainMstrList) {
-        List<Map<String, Object>> resultList = new ArrayList<>(domainMstrList.size());
         String message;
-        for (int i = 0; i < domainMstrList.size(); i++) {
-            ResultUtil result = deleteDomainInfo(domainMstrList.get(i));
-            Map<String, Object> resultmap = new HashMap<>();
-            resultmap.put(domainMstrList.get(i).getDomainName(), result);
-            resultList.add(resultmap);
+        for (DomainMstr domainMstr : domainMstrList) {
+            ResultUtil result = deleteDomainInfo(domainMstr);
+            domainMstr.setResult(result.get("msg").toString());
+            domainMstr.setCode(result.get("code").toString());
         }
         message = MessageUtil.getMessage(DomainMessage.DOMAIN_DELETE_SUCCESS.getCode());
-        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(domainMstrList);
     }
 
     @Override
     public ResultUtil insertDomainInfoList(List<DomainMstr> domainMstrList) {
-        List<Map<String, Object>> resultList = new ArrayList<>(domainMstrList.size());
         String message;
-        for (int i = 0; i < domainMstrList.size(); i++) {
-            ResultUtil result = insertDomainInfo(domainMstrList.get(i));
-            Map<String, Object> resultmap = new HashMap<>();
-            resultmap.put(domainMstrList.get(i).getDomainName(), result);
-            resultList.add(resultmap);
+        for (DomainMstr domainMstr : domainMstrList) {
+            ResultUtil result = insertDomainInfo(domainMstr);
+            domainMstr.setResult(result.get("msg").toString());
+            domainMstr.setCode(result.get("code").toString());
         }
         message = MessageUtil.getMessage(DomainMessage.DOMAIN_ADD_SUCCESS.getCode());
-        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(domainMstrList);
     }
 
 
     @Override
     public ResultUtil updateDomainInfoList(List<DomainMstr> domainMstrList) {
-        List<Map<String, Object>> resultList = new ArrayList<>(domainMstrList.size());
         String message;
-        for (int i = 0; i < domainMstrList.size(); i++) {
-            ResultUtil resultUtil = updateDomainInfo(domainMstrList.get(i));
-            Map<String, Object> resultmap = new HashMap<>();
-            resultmap.put(domainMstrList.get(i).getDomainName(), resultUtil);
-            resultList.add(resultmap);
+        for (DomainMstr domainMstr : domainMstrList) {
+            ResultUtil result = updateDomainInfo(domainMstr);
+            domainMstr.setResult(result.get("msg").toString());
+            domainMstr.setCode(result.get("code").toString());
         }
         message = MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_SUCCESS.getCode());
-        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(domainMstrList);
     }
 
 
     /**
      * 导入域信息
      * 批量插入或更新
+     *
      * @param workbook Excel文件
      * @return
      */
@@ -259,11 +258,11 @@ public  class DomainServiceImpl implements DomainService {
         return ResultUtil.ok().setData(resultList);
 
     }
+
     /**
      * 导出域信息
      *
      * @param domainDomain
-     *
      */
     @Override
     public ResultUtil exportDomainInfo(String domainDomain) {
@@ -275,12 +274,12 @@ public  class DomainServiceImpl implements DomainService {
         String message;
         ResultUtil result = dbHelperService.select(sql, DATASOURCE_POSTGRES);
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
-            message = MessageUtil.getMessage(Message.QUERY_ERROR.getCode());
+            message = MessageUtil.getMessage(DomainMessage.DOMAIN_EXPORT_ERROR.getCode());
             logger.error(message);
         }
         ArrayList list = (ArrayList) result.get("result");
         if (list.size() == 0) {
-            message = MessageUtil.getMessage(Message.QUERY_ERROR.getCode());
+            message = MessageUtil.getMessage(DomainMessage.DOMAIN_EXPORT_ERROR.getCode());
             logger.error(message);
         }
         List<String> titlelist = new ArrayList<>();
@@ -295,14 +294,13 @@ public  class DomainServiceImpl implements DomainService {
         titlelist.add("domainMaxUsers");
         titlelist.add("domainAdmin");
 
-        String diskPath = "D:/test/";
-        String path = ExcelUtils.createMapListExcel(list, diskPath, titlelist);
+        String path = ExcelUtils.createMapListExcel(list, fileDiskPath, titlelist);
         FileUtils fileUtils = new FileUtils();
         fileUtils.downLoad(path);
 
-        message = MessageUtil.getMessage(DomainMessage.DOMAIN_ADD_SUCCESS.getCode());
+        message = MessageUtil.getMessage(DomainMessage.DOMAIN_EXPORT_SUCCESSS.getCode());
         logger.info(message);
-        return ResultUtil.ok().put("msg" , message).put("result",path);
+        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName());
 
     }
 
@@ -314,7 +312,7 @@ public  class DomainServiceImpl implements DomainService {
      * @author john.xiao
      * @date 2020-12-17 11-27
      */
-    private String getSortString(List<Map<String,Object>> criteriaList) {
+    private String getSortString(List<Map<String, Object>> criteriaList) {
         StringBuilder criteriaBuilder = new StringBuilder();
         if (criteriaList.size() > 0) {
             for (int i = 0; i < criteriaList.size(); i++) {
@@ -330,7 +328,7 @@ public  class DomainServiceImpl implements DomainService {
         } else {
             criteriaBuilder.append("domain_domain,");
         }
-        criteriaBuilder.setLength(criteriaBuilder.length()-1);
+        criteriaBuilder.setLength(criteriaBuilder.length() - 1);
         return criteriaBuilder.toString();
     }
 
@@ -355,4 +353,67 @@ public  class DomainServiceImpl implements DomainService {
         return list.size() > 0;
     }
 
+    /**
+     * 获取用户域
+     *
+     * @param user 用户名
+     * @return
+     */
+    @Override
+    public ResultUtil getUserdomainInfo(String user) {
+        String message;
+        String sql = "select userdomain_userid as user,userdomain_corp as domainCorp,userdomain_domain as domain from userdomain_ref where lower(userdomain_userid) = lower('" + user + "')";
+        ResultUtil result = dbHelperService.select(sql, DATASOURCE_POSTGRES);
+        if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
+            message = MessageUtil.getMessage(DomainMessage.DOMAIN_GET_ERROR.getCode());
+            logger.error(message);
+            return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+        }
+        ArrayList list = (ArrayList) result.get("result");
+        Map<String, Object> dataMap = new HashMap<>(3);
+        dataMap.put("list", list);
+        message = MessageUtil.getMessage(DomainMessage.DOMAIN_GET_SUCCESS.getCode());
+        logger.info(message);
+        return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(dataMap);
+    }
+
+
+    /**
+     * 更新用户域信息
+     */
+    @Override
+    public ResultUtil updateUserDomain(String user, List <DomainMstr>domainMstr) {
+        String message;
+        String deleteSql = "delete from userdomain_ref where userdomain_userid = '"+user+"';";
+        ResultUtil deleteResult = dbHelperService.delete(deleteSql,DATASOURCE_POSTGRES);
+        if(!SUCCESS_CODE.equals(deleteResult.get(CODE).toString())){
+            message = MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_ERROR.getCode());
+            logger.error(message);
+            return ResultUtil.error(message);
+        }
+        StringBuilder stringBuilder=new StringBuilder();
+        for (int i = 0; i < domainMstr.size(); i++) {
+            Map<String,Object> listMap= (Map<String, Object>) domainMstr.get(i);
+            Optional<String> domainDomain = Optional.ofNullable(listMap.get("domain").toString());
+            Optional<String> domainCorp= Optional.ofNullable(listMap.get("domainCorp").toString());
+            stringBuilder.append("('"+user+"','"+domainCorp.orElse("")+"','"+domainDomain.orElse("")+"'),");
+            ((Map<String, Object>) domainMstr.get(i)).put("result","数据添加成功");
+        }
+        //删除最后一个,
+        stringBuilder.setLength(stringBuilder.length()-1);
+        String addSql="insert into userdomain_ref(userdomain_userid,userdomain_corp,userdomain_domain) values "+stringBuilder.toString()+"";
+        ResultUtil addResult=dbHelperService.insert(addSql,DATASOURCE_POSTGRES);
+        if(HttpStatus.OK.value()!= (int)addResult.get("code")){
+            message= MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_ERROR.getCode());
+            logger.error(message);
+            return ResultUtil.error(message);
+        }
+        message= MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_SUCCESS.getCode());
+        logger.info(message);
+        return ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName());
+    }
 }
+
+
+
+

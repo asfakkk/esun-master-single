@@ -168,8 +168,7 @@ public class RoleController {
 	 * 获取导入模板
 	 */
 	@GetMapping("template")
-	public void getTemplate() {
-		String path = "E:/template/role.xls";
+	public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/role.xls")String path) {
 		FileUtils fileUtils = new FileUtils();
 		fileUtils.downLoad(path);
 	}

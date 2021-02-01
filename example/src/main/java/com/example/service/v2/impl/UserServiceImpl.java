@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
 			userMstr.setResult(result.get("msg").toString());
 			userMstr.setCode(result.get("code").toString());
 		}
-		message=MessageUtil.getMessage(Message.USER_INFO_DELETE_SUCCESS.getCode());
+		message=MessageUtil.getMessage(Message.USER_INFO_INSERT_SUCCESS.getCode());
 		return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(userMstrList);
 	}
 
@@ -198,11 +198,11 @@ public class UserServiceImpl implements UserService {
 	public ResultUtil updateUserInfoList(List<UserMstr> userMstrList) {
 		String message;
 		for (UserMstr userMstr : userMstrList) {
-			ResultUtil result = insertUserInfo(userMstr);
+			ResultUtil result = updateUserInfo(userMstr);
 			userMstr.setResult(result.get("msg").toString());
 			userMstr.setCode(result.get("code").toString());
 		}
-		message=MessageUtil.getMessage(Message.USER_INFO_DELETE_SUCCESS.getCode());
+		message=MessageUtil.getMessage(Message.USER_INFO_UPDATE_SUCCESS.getCode());
 		return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(userMstrList);
 	}
 
@@ -411,8 +411,7 @@ public class UserServiceImpl implements UserService {
 		titleList.add("userDepart");
 		titleList.add("userPost");
 		titleList.add("userQqnum");
-		String diskPath="E:/test/";
-		String path= ExcelUtils.createMapListExcel(list,diskPath,titleList);
+		String path= ExcelUtils.createMapListExcel(list,fileDiskPath,titleList);
 		FileUtils fileUtils=new FileUtils();
 		fileUtils.downLoad(path);
 	}

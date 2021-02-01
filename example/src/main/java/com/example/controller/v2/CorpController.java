@@ -164,8 +164,7 @@ public class CorpController {
      *
      */
     @GetMapping("template")
-        public void getTemplate(){
-        String path="E:/template/corp.xls";
+        public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/domain.xls")String path){
         FileUtils fileUtils=new FileUtils();
         fileUtils.downLoad(path);
       }

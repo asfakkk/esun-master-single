@@ -4,22 +4,18 @@ import com.example.entity.DomainMstr;
 import com.example.utils.ResultUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 
-
-
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author John.xiao
+ */
 public interface DomainService {
-
-
-
-
     /**
      * 获取域信息
      * @param pageIndex 页码数
      * @param pageSize  分页大小
      * @param criteriaList 排序列表
-     * @param domainId 查询域
      * @return 返回结果工具类
      */
     ResultUtil getDomainInfoList(int pageIndex, int pageSize, String domain, List<Map<String, Object>> criteriaList);
@@ -78,7 +74,7 @@ public interface DomainService {
      * @return 结果封装类
      */
 
-    
+
 
 
 
@@ -96,6 +92,19 @@ public interface DomainService {
      * @return
      */
    ResultUtil exportDomainInfo(String domainDomain);
+    /**
+     * 获取用户域信息
+     * @param user
+     * @return
+     */
+    ResultUtil getUserdomainInfo(String user);
 
+    /**
+     * 更新用户域
+     * @param user 用户名
+     * @param domainMstrList 域信息列表
+     * @return 返回结果工具类
+     */
+    ResultUtil updateUserDomain(String user, List<DomainMstr> domainMstrList);
 
 }

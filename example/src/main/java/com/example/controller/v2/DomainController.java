@@ -7,8 +7,6 @@ import com.example.utils.ResultUtil;
 import net.sf.json.JSONArray;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -134,16 +132,29 @@ public class DomainController {
      * 获取导入模板
      */
     @GetMapping("template")
-    public void getTemplate(){
-        String path="E:/template/domain.xls";
+    public void getTemplate(@RequestParam(value = "path",required = false,defaultValue = "D:/template/domain.xls")String path){
         FileUtils fileUtils=new FileUtils();
         fileUtils.downLoad(path);
     }
-//    /**
-//     * 获取用户域信息
-//     */
-//    @GetMapping("userdomain")
-//    public ResultUtil getUserdomain(@RequestParam("user") String user ){
-//        return domainService.getUserDomainInfoList(user);
-//    }
+   /**
+     * 获取用户域信息     
+    * */
+   @GetMapping("userDomain")
+   public ResultUtil getUserdomainInfo(
+           @RequestParam("user") String user) {
+       return domainService. getUserdomainInfo(user);
+   }
+
+    /**
+     * 更新用户域信息
+     *
+     * @param user
+     * @param domainMstr
+     * @return
+     */
+    @PutMapping ("userDomain")
+    public ResultUtil updateUserDomain(@RequestParam (value = "user",required = false,defaultValue = "")String user,
+                                       @RequestParam  List <DomainMstr> domainMstr) {
+        return null;
+    }
 }
