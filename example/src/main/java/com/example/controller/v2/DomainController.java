@@ -16,8 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @author John.xiao
+ */
 @RestController("DomainV2Controller")
-@RequestMapping("v2/domainManager")
+@RequestMapping("v2/domainManage")
 public class DomainController {
     @Resource(name = "DomainV2Service")
     DomainService domainService;
