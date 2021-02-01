@@ -37,19 +37,21 @@ public class MenudServiceImpl implements MenudService {
      *
      * @param pageIndex    页码数
      * @param pageSize     分页大小
-     * @param menudNbr     菜单编号
-     * @param menudSelect  下级菜单
-     * @param menudCorp
-     * @param menudLang
+     * @param menuNbr     菜单编号
+     * @param menuSelect  下级菜单
+     * @param menuCorp
+     * @param menuLang
      * @param criteriaList 排序列表
      * @return 结果封装类
      */
     @Override
-    public ResultUtil getMenudInfoList(int pageIndex, int pageSize, String menudCorp, String menudNbr, String menudSelect, String menudLang, List<Map<String, Object>> criteriaList) {
+    public ResultUtil getMenudInfoList(int pageIndex, int pageSize, String menuCorp, String menuNbr, String menuSelect, String menuLang, List<Map<String, Object>> criteriaList) {
         String sortString = getSortString(criteriaList);
         String sql = "select" +
-                " menud_corp as \"menudCorp\", menud_nbr as \"menudNbr\", menud_select as \"menudSelect\", menud_lang as \"menudLang\", menud_label as \"menudLabel\" " +
-                "from menud_det where menud_nbr ilike '%25" + menudNbr + "%25' and menud_select ilike '%25" + menudSelect + "%25' and menud_corp ilike '%25" + menudCorp + "%25' and menud_lang ilike '%25" + menudLang + "%25' " +
+                "    md.menud_corp as \"menuCorp\", md.menud_nbr as \"menuNbr\", md.menud_select as \"menuSelect\", md.menud_lang as \"menuLang\", md.menud_label as \"menuLabel\",mm.menu_name as \"menuName\" " +
+                "    from menud_det md"+
+                "    left join menu_mstr mm on md.menud_nbr = mm.menu_nbr and md.menud_select = mm.menu_select" +
+                "    where  menu_nbr ilike '%25" + menuNbr + "%25' and menud_select ilike '%25" + menuSelect + "%25' and menud_corp ilike '%25" + menuCorp + "%25' and menud_lang ilike '%25" + menuLang + "%25' " +
                 "order by " + sortString + ";";
         String message;
         ResultUtil result = dbHelperService.selectPage(sql, DATASOURCE_POSTGRES, pageIndex, pageSize);
