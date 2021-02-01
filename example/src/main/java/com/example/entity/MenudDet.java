@@ -11,265 +11,264 @@ import java.io.Serializable;
 public class MenudDet extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -11033618919089085L;
 
-    private String menudCorp;
+    private String menuCorp;
 
-    private String menudNbr;
+    private String menuNbr;
 
-    private String menudSelect;
+    private String menuSelect;
 
-    private String menudLang;
+    private String menuLang;
 
-    private String menudLabel;
+    private String menuLabel;
 
-    private Object menudModDate;
+    private Object menuModDate;
 
-    private String menudModProg;
+    private String menuModProg;
 
-    private String menudModUser;
+    private String menuModUser;
 
-    private String menud_Chr01;
+    private String menu_Chr01;
 
-    private String menud_Chr02;
+    private String menu_Chr02;
 
-    private String menud_Chr03;
+    private String menu_Chr03;
 
-    private Integer menud_Int01;
+    private Integer menu_Int01;
 
-    private Integer menud_Int02;
+    private Integer menu_Int02;
 
-    private Integer menud_Int03;
+    private Integer menu_Int03;
 
-    private Object menud_Dte01;
+    private Object menu_Dte01;
 
-    private Object menud_Dte02;
+    private Object menu_Dte02;
 
-    private Object menud_Dte03;
+    private Object menu_Dte03;
 
-    private Object menud_Dec01;
+    private Object menu_Dec01;
 
-    private Object menud_Dec02;
+    private Object menu_Dec02;
 
-    private Object menud_Dec03;
+    private Object menu_Dec03;
 
-    private Boolean menud_Log01;
+    private Boolean menu_Log01;
 
-    private Boolean menud_Log02;
+    private Boolean menu_Log02;
 
-    private Integer menudModTime;
+    private Integer menuModTime;
 
-    private String menudUser1;
+    private String menuUser1;
 
-    private String menudUser2;
+    private String menuUser2;
 
-    private String menud_Qadc01;
+    private String menu_Qadc01;
 
 
-    public String getMenudCorp() {
-        return menudCorp;
+    public String getMenuCorp() {
+        return menuCorp;
     }
 
-    public void setMenudCorp(String menudCorp) {
-        this.menudCorp = menudCorp;
+    public void setMenuCorp(String menuCorp) {
+        this.menuCorp = menuCorp;
     }
 
-    public String getMenudNbr() {
-        return menudNbr;
+    public String getMenuNbr() {
+        return menuNbr;
     }
 
-    public void setMenudNbr(String menudNbr) {
-        this.menudNbr = menudNbr;
+    public void setMenuNbr(String menuNbr) {
+        this.menuNbr = menuNbr;
     }
 
-    public String getMenudSelect() {
-        return menudSelect;
+    public String getMenuSelect() {
+        return menuSelect;
     }
 
-    public void setMenudSelect(String menudSelect) {
-        this.menudSelect = menudSelect;
+    public void setMenuSelect(String menuSelect) {
+        this.menuSelect = menuSelect;
     }
 
-    public String getMenudLang() {
-        return menudLang;
+    public String getMenuLang() {
+        return menuLang;
     }
 
-    public void setMenudLang(String menudLang) {
-        this.menudLang = menudLang;
+    public void setMenuLang(String menuLang) {
+        this.menuLang = menuLang;
     }
 
-    public String getMenudLabel() {
-        return menudLabel;
+    public String getMenuLabel() {
+        return menuLabel;
     }
 
-    public void setMenudLabel(String menudLabel) {
-        this.menudLabel = menudLabel;
+    public void setMenuLabel(String menuLabel) {
+        this.menuLabel = menuLabel;
     }
 
-    public Object getMenudModDate() {
-        return menudModDate;
+    public Object getMenuModDate() {
+        return menuModDate;
     }
 
-    public void setMenudModDate(Object menudModDate) {
-        this.menudModDate = menudModDate;
+    public void setMenuModDate(Object menuModDate) {
+        this.menuModDate = menuModDate;
     }
 
-    public String getMenudModProg() {
-        return menudModProg;
+    public String getMenuModProg() {
+        return menuModProg;
     }
 
-    public void setMenudModProg(String menudModProg) {
-        this.menudModProg = menudModProg;
+    public void setMenuModProg(String menuModProg) {
+        this.menuModProg = menuModProg;
     }
 
-    public String getMenudModUser() {
-        return menudModUser;
+    public String getMenuModUser() {
+        return menuModUser;
     }
 
-    public void setMenudModUser(String menudModUser) {
-        this.menudModUser = menudModUser;
+    public void setMenuModUser(String menuModUser) {
+        this.menuModUser = menuModUser;
     }
 
-    public String getMenud_Chr01() {
-        return menud_Chr01;
+    public String getMenu_Chr01() {
+        return menu_Chr01;
     }
 
-    public void setMenud_Chr01(String menud_Chr01) {
-        this.menud_Chr01 = menud_Chr01;
+    public void setMenu_Chr01(String menu_Chr01) {
+        this.menu_Chr01 = menu_Chr01;
     }
 
-    public String getMenud_Chr02() {
-        return menud_Chr02;
+    public String getMenu_Chr02() {
+        return menu_Chr02;
     }
 
-    public void setMenud_Chr02(String menud_Chr02) {
-        this.menud_Chr02 = menud_Chr02;
+    public void setMenu_Chr02(String menu_Chr02) {
+        this.menu_Chr02 = menu_Chr02;
     }
 
-    public String getMenud_Chr03() {
-        return menud_Chr03;
+    public String getMenu_Chr03() {
+        return menu_Chr03;
     }
 
-    public void setMenud_Chr03(String menud_Chr03) {
-        this.menud_Chr03 = menud_Chr03;
+    public void setMenu_Chr03(String menu_Chr03) {
+        this.menu_Chr03 = menu_Chr03;
     }
 
-    public Integer getMenud_Int01() {
-        return menud_Int01;
+    public Integer getMenu_Int01() {
+        return menu_Int01;
     }
 
-    public void setMenud_Int01(Integer menud_Int01) {
-        this.menud_Int01 = menud_Int01;
+    public void setMenu_Int01(Integer menu_Int01) {
+        this.menu_Int01 = menu_Int01;
     }
 
-    public Integer getMenud_Int02() {
-        return menud_Int02;
+    public Integer getMenu_Int02() {
+        return menu_Int02;
     }
 
-    public void setMenud_Int02(Integer menud_Int02) {
-        this.menud_Int02 = menud_Int02;
+    public void setMenu_Int02(Integer menu_Int02) {
+        this.menu_Int02 = menu_Int02;
     }
 
-    public Integer getMenud_Int03() {
-        return menud_Int03;
+    public Integer getMenu_Int03() {
+        return menu_Int03;
     }
 
-    public void setMenud_Int03(Integer menud_Int03) {
-        this.menud_Int03 = menud_Int03;
+    public void setMenu_Int03(Integer menu_Int03) {
+        this.menu_Int03 = menu_Int03;
     }
 
-    public Object getMenud_Dte01() {
-        return menud_Dte01;
+    public Object getMenu_Dte01() {
+        return menu_Dte01;
     }
 
-    public void setMenud_Dte01(Object menud_Dte01) {
-        this.menud_Dte01 = menud_Dte01;
+    public void setMenu_Dte01(Object menu_Dte01) {
+        this.menu_Dte01 = menu_Dte01;
     }
 
-    public Object getMenud_Dte02() {
-        return menud_Dte02;
+    public Object getMenu_Dte02() {
+        return menu_Dte02;
     }
 
-    public void setMenud_Dte02(Object menud_Dte02) {
-        this.menud_Dte02 = menud_Dte02;
+    public void setMenu_Dte02(Object menu_Dte02) {
+        this.menu_Dte02 = menu_Dte02;
     }
 
-    public Object getMenud_Dte03() {
-        return menud_Dte03;
+    public Object getMenu_Dte03() {
+        return menu_Dte03;
     }
 
-    public void setMenud_Dte03(Object menud_Dte03) {
-        this.menud_Dte03 = menud_Dte03;
+    public void setMenu_Dte03(Object menu_Dte03) {
+        this.menu_Dte03 = menu_Dte03;
     }
 
-    public Object getMenud_Dec01() {
-        return menud_Dec01;
+    public Object getMenu_Dec01() {
+        return menu_Dec01;
     }
 
-    public void setMenud_Dec01(Object menud_Dec01) {
-        this.menud_Dec01 = menud_Dec01;
+    public void setMenu_Dec01(Object menu_Dec01) {
+        this.menu_Dec01 = menu_Dec01;
     }
 
-    public Object getMenud_Dec02() {
-        return menud_Dec02;
+    public Object getMenu_Dec02() {
+        return menu_Dec02;
     }
 
-    public void setMenud_Dec02(Object menud_Dec02) {
-        this.menud_Dec02 = menud_Dec02;
+    public void setMenu_Dec02(Object menu_Dec02) {
+        this.menu_Dec02 = menu_Dec02;
     }
 
-    public Object getMenud_Dec03() {
-        return menud_Dec03;
+    public Object getMenu_Dec03() {
+        return menu_Dec03;
     }
 
-    public void setMenud_Dec03(Object menud_Dec03) {
-        this.menud_Dec03 = menud_Dec03;
+    public void setMenu_Dec03(Object menu_Dec03) {
+        this.menu_Dec03 = menu_Dec03;
     }
 
-    public Boolean getMenud_Log01() {
-        return menud_Log01;
+    public Boolean getMenu_Log01() {
+        return menu_Log01;
     }
 
-    public void setMenud_Log01(Boolean menud_Log01) {
-        this.menud_Log01 = menud_Log01;
+    public void setMenu_Log01(Boolean menu_Log01) {
+        this.menu_Log01 = menu_Log01;
     }
 
-    public Boolean getMenud_Log02() {
-        return menud_Log02;
+    public Boolean getMenu_Log02() {
+        return menu_Log02;
     }
 
-    public void setMenud_Log02(Boolean menud_Log02) {
-        this.menud_Log02 = menud_Log02;
+    public void setMenu_Log02(Boolean menu_Log02) {
+        this.menu_Log02 = menu_Log02;
     }
 
-    public Integer getMenudModTime() {
-        return menudModTime;
+    public Integer getMenuModTime() {
+        return menuModTime;
     }
 
-    public void setMenudModTime(Integer menudModTime) {
-        this.menudModTime = menudModTime;
+    public void setMenuModTime(Integer menuModTime) {
+        this.menuModTime = menuModTime;
     }
 
-    public String getMenudUser1() {
-        return menudUser1;
+    public String getMenuUser1() {
+        return menuUser1;
     }
 
-    public void setMenudUser1(String menudUser1) {
-        this.menudUser1 = menudUser1;
+    public void setMenuUser1(String menuUser1) {
+        this.menuUser1 = menuUser1;
     }
 
-    public String getMenudUser2() {
-        return menudUser2;
+    public String getMenuUser2() {
+        return menuUser2;
     }
 
-    public void setMenudUser2(String menudUser2) {
-        this.menudUser2 = menudUser2;
+    public void setMenuUser2(String menuUser2) {
+        this.menuUser2 = menuUser2;
     }
 
-    public String getMenud_Qadc01() {
-        return menud_Qadc01;
+    public String getMenu_Qadc01() {
+        return menu_Qadc01;
     }
 
-    public void setMenud_Qadc01(String menud_Qadc01) {
-        this.menud_Qadc01 = menud_Qadc01;
+    public void setMenu_Qadc01(String menu_Qadc01) {
+        this.menu_Qadc01 = menu_Qadc01;
     }
-
 }

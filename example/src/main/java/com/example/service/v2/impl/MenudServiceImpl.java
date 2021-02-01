@@ -112,16 +112,16 @@ public class MenudServiceImpl implements MenudService {
     @Override
     public ResultUtil insertMenudInfo(MenudDet menudDet) {
         String message;
-        boolean menudExist = isMenudExist(menudDet.getMenudCorp(), menudDet.getMenudNbr(), menudDet.getMenudSelect(), menudDet.getMenudLang());
+        boolean menudExist = isMenudExist(menudDet.getMenuCorp(), menudDet.getMenuNbr(), menudDet.getMenuSelect(), menudDet.getMenuLang());
         if (menudExist) {
             message = MessageUtil.getMessage(Message.DELIVERY_IS_EXIST.getCode());
-            logger.warn(menudDet.getMenudCorp() + "," + menudDet.getMenudNbr() + "," + menudDet.getMenudSelect() + "," + menudDet.getMenudLang() + "：" + message);
+            logger.warn(menudDet.getMenuCorp() + "," + menudDet.getMenuNbr() + "," + menudDet.getMenuSelect() + "," + menudDet.getMenuLang() + "：" + message);
             return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
         }
         String sql = "insert into menud_det " +
                 "(menud_corp,menud_nbr, menud_select, menud_lang, menud_label) " +
-                "values('" + menudDet.getMenudCorp() + "','" + menudDet.getMenudNbr() + "','" + menudDet.getMenudSelect() + "','" +
-                menudDet.getMenudLang() + "','" + menudDet.getMenudLabel() + "');";
+                "values('" + menudDet.getMenuCorp() + "','" + menudDet.getMenuNbr() + "','" + menudDet.getMenuSelect() + "','" +
+                menudDet.getMenuLang() + "','" + menudDet.getMenuLabel() + "');";
         ResultUtil result = dbHelperService.insert(sql, DATASOURCE_POSTGRES);
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
             message = MessageUtil.getMessage(Message.DELIVERY_ADD_ERROR.getCode());
@@ -160,15 +160,15 @@ public class MenudServiceImpl implements MenudService {
     @Override
     public ResultUtil deleteMenudInfo(MenudDet menudDet) {
         String message;
-        boolean menudExist = isMenudExist(menudDet.getMenudCorp(), menudDet.getMenudNbr(), menudDet.getMenudSelect(), menudDet.getMenudLang());
+        boolean menudExist = isMenudExist(menudDet.getMenuCorp(), menudDet.getMenuNbr(), menudDet.getMenuSelect(), menudDet.getMenuLang());
         if (!menudExist) {
             message = MessageUtil.getMessage(Message.DELIVERY_NOT_EXIST.getCode());
-            logger.warn(menudDet.getMenudCorp() + "," + menudDet.getMenudNbr() + "," + menudDet.getMenudSelect() + "," + menudDet.getMenudLang() + "：" + message);
+            logger.warn(menudDet.getMenuCorp() + "," + menudDet.getMenuNbr() + "," + menudDet.getMenuSelect() + "," + menudDet.getMenuLang() + "：" + message);
             return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
         }
         String sql = "delete from public.menud_det " +
                 "where " +
-                "menud_corp='" + menudDet.getMenudCorp() + "' and menud_nbr='" + menudDet.getMenudNbr() + "' and menud_select='" + menudDet.getMenudSelect() + "'and menud_lang='" + menudDet.getMenudLang() + "'";
+                "menud_corp='" + menudDet.getMenuCorp() + "' and menud_nbr='" + menudDet.getMenuNbr() + "' and menud_select='" + menudDet.getMenuSelect() + "'and menud_lang='" + menudDet.getMenuLang() + "'";
         ResultUtil result = dbHelperService.insert(sql, DATASOURCE_POSTGRES);
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
             message = MessageUtil.getMessage(Message.DELIVERY_DELETE_ERROR.getCode());
@@ -207,15 +207,15 @@ public class MenudServiceImpl implements MenudService {
     @Override
     public ResultUtil updateMenudInfo(MenudDet menudDet) {
         String message;
-        boolean menudExist = isMenudExist(menudDet.getMenudCorp(), menudDet.getMenudNbr(), menudDet.getMenudSelect(), menudDet.getMenudLang());
+        boolean menudExist = isMenudExist(menudDet.getMenuCorp(), menudDet.getMenuNbr(), menudDet.getMenuSelect(), menudDet.getMenuLang());
         if (!menudExist) {
             message = MessageUtil.getMessage(Message.DELIVERY_NOT_EXIST.getCode());
-            logger.warn(menudDet.getMenudCorp() + "," + menudDet.getMenudNbr() + "," + menudDet.getMenudSelect() + "," + menudDet.getMenudLang() + "：" + message);
+            logger.warn(menudDet.getMenuCorp() + "," + menudDet.getMenuNbr() + "," + menudDet.getMenuSelect() + "," + menudDet.getMenuLang() + "：" + message);
             return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
         }
-        String sql = "update menud_det set menud_label= '" + menudDet.getMenudLabel() + "' " +
+        String sql = "update menud_det set menud_label= '" + menudDet.getMenuLabel() + "' " +
                 "where " +
-                "menud_corp='" + menudDet.getMenudCorp() + "' and menud_nbr='" + menudDet.getMenudNbr() + "' and menud_select='" + menudDet.getMenudSelect() + "'and menud_lang='" + menudDet.getMenudLang() + "'";
+                "menud_corp='" + menudDet.getMenuCorp() + "' and menud_nbr='" + menudDet.getMenuNbr() + "' and menud_select='" + menudDet.getMenuSelect() + "'and menud_lang='" + menudDet.getMenuLang() + "'";
         ResultUtil result = dbHelperService.insert(sql, DATASOURCE_POSTGRES);
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
             message = MessageUtil.getMessage(Message.DELIVERY_UPDATE_ERROR.getCode());
@@ -281,20 +281,20 @@ public class MenudServiceImpl implements MenudService {
             menudLabel = Optional.ofNullable(menudInfo.get("menudLabel"));
             //实体类赋值
             MenudDet menudDet = new MenudDet();
-            menudDet.setMenudCorp(menudCorp.orElse("").toString());
-            menudDet.setMenudNbr(menudNbr.orElse("").toString());
-            menudDet.setMenudSelect(menudSelect.orElse("").toString());
-            menudDet.setMenudLang(menudLang.orElse("").toString());
-            menudDet.setMenudLabel(menudLabel.orElse("").toString());
+            menudDet.setMenuCorp(menudCorp.orElse("").toString());
+            menudDet.setMenuNbr(menudNbr.orElse("").toString());
+            menudDet.setMenuSelect(menudSelect.orElse("").toString());
+            menudDet.setMenuLang(menudLang.orElse("").toString());
+            menudDet.setMenuLabel(menudLabel.orElse("").toString());
             //菜单标签运行结果Map
             Map<String, Object> resultMap = new HashMap<>(2);
             //查看该菜单标签是否存在
-            if (!isMenudExist(menudDet.getMenudCorp(), menudDet.getMenudNbr(), menudDet.getMenudSelect(), menudDet.getMenudLang())) {
+            if (!isMenudExist(menudDet.getMenuCorp(), menudDet.getMenuNbr(), menudDet.getMenuSelect(), menudDet.getMenuLang())) {
                 ResultUtil insertResult = insertMenudInfo(menudDet);
-                resultMap.put(menudDet.getMenudCorp() + " " + menudDet.getMenudNbr() + " " + menudDet.getMenudSelect() + " " + menudDet.getMenudLang(), insertResult);
+                resultMap.put(menudDet.getMenuCorp() + " " + menudDet.getMenuNbr() + " " + menudDet.getMenuSelect() + " " + menudDet.getMenuLang(), insertResult);
             } else {
                 ResultUtil updateResult = updateMenudInfo(menudDet);
-                resultMap.put(menudDet.getMenudCorp() + " " + menudDet.getMenudNbr() + " " + menudDet.getMenudSelect() + " " + menudDet.getMenudLang(), updateResult);
+                resultMap.put(menudDet.getMenuCorp() + " " + menudDet.getMenuNbr() + " " + menudDet.getMenuSelect() + " " + menudDet.getMenuLang(), updateResult);
             }
             resultList.add(resultMap);
         }
