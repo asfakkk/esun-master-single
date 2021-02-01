@@ -121,8 +121,8 @@ public class RoleController {
 	/**
 	 * 更新用户角色
 	 *
-	 * @param roleMstrList
-	 * @param userUserId
+	 * @param roleMstrList 角色实体列表
+	 * @param userUserId 用户Id
 	 * @return
 	 * @author john.xiao
 	 * @date 2020-10-13 17:06

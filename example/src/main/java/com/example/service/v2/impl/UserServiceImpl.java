@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 		String sql="insert into user_mstr "+
 				"(guid,user_userid,user_name,user_lang,user_password,user_last_chg_date,user_mail_address,user_type," +
 				"user_country,user_actived,user_depart,user_post,user_phone,user_qqnum,user_salt,user_corp) " +
-				"values('"+GUID+"','"+userMstr.getUserUserId()+"','"+userMstr.getUserName()+"','"+userMstr.getUserLang()+"','"+encodePassword+"','"+changeTime+"','"+userMstr.getUserMailAddress()+"','"+userMstr.getUserType()+"'," +
+				"values('"+GUID+"',E'"+userMstr.getUserUserId()+"','"+userMstr.getUserName()+"','"+userMstr.getUserLang()+"','"+encodePassword+"','"+changeTime+"','"+userMstr.getUserMailAddress()+"','"+userMstr.getUserType()+"'," +
 				"'"+userMstr.getUserCountry()+"',"+userMstr.getUserActived()+",'"+userMstr.getUserDepart()+"','"+userMstr.getUserPost()+"','"+userMstr.getUserPhone()+"','"+userMstr.getUserQqnum()+"','"+salt+"','"+userMstr.getUserCorp()+"');";
 		ResultUtil result=dbHelperService.insert(sql,DATASOURCE_POSTGRES);
 		if(!SUCCESS_CODE.equals(result.get(CODE).toString())){
