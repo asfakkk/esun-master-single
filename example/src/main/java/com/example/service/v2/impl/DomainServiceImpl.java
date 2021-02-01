@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -55,24 +54,21 @@ public  class DomainServiceImpl implements DomainService {
     public static final String CODE = "code";
     public static final String SUCCESS_CODE = "10000";
 
-    @Value("${file.disk.path}")
-    String fileDiskPath;
-
     @Override
-    public ResultUtil getDomainInfoList(int pageIndex, int pageSize, String domain, List<Map<String, Object>> criteriaList) {
+    public ResultUtil getDomainInfoList(int pageIndex, int pageSize, String domainDomain, List<Map<String, Object>> criteriaList) {
         String sortString = getSortString(criteriaList);
         String sql = "select domain_domain as \"domainDomain\", domain_name as \"domainName\", domain_corp as \"domainCorp\", domain_sname as \"domainSname\", " +
                 "domain_db as \"domainDb\", domain_active as \"domainActive\", domain_propath as \"domainPropath\", " +
                 "domain_type as \"domainType\", domain_max_users as \"domainMaxUsers\", domain_admin as  \"domainAdmin\" " +
                 "from domain_mstr " +
-                "where domain_domain ilike '%" + domain + "%' " +
-                "order by " + sortString + " ";
+                "where domain_domain ilike '%25" + domainDomain + "%25' " +
+                "order by " + sortString + ";";
         String message;
         ResultUtil result = dbHelperService.selectPage(sql, DATASOURCE_POSTGRES, pageIndex, pageSize);
         if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
             message = MessageUtil.getMessage(DomainMessage.DOMAIN_GET_ERROR.getCode());
             logger.error(message);
-            return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+            return ResultUtil.error(message,Thread.currentThread().getStackTrace()[1].getMethodName());
         }
         ArrayList list = (ArrayList) result.get("result");
         Map<String, Object> dataMap = new HashMap<>(10);
@@ -84,6 +80,35 @@ public  class DomainServiceImpl implements DomainService {
         message = MessageUtil.getMessage(DomainMessage.DOMAIN_GET_SUCCESS.getCode());
         logger.info(message);
         return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(dataMap);
+    }
+
+    /**
+     * 获取排序条件字符串
+     *
+     * @param criteriaList 排序列表
+     * @return 排序后的字符
+     * @author john.xiao
+     * @date 2020-12-17 11-27
+     */
+    private String getSortString(List<Map<String, Object>> criteriaList) {
+        StringBuilder criteriaBuilder = new StringBuilder();
+        if (criteriaList.size() > 0) {
+            for (int i = 0; i < criteriaList.size(); i++) {
+                Map<String, Object> listMap = (Map<String, Object>) criteriaList.get(i);
+                Optional<Object> sort = Optional.ofNullable(listMap.get("sort"));
+                Optional<Object> criteria = Optional.ofNullable(listMap.get("criteria"));
+                criteriaBuilder.append(criteria.orElse("domain"));
+                if (!"0".equals(sort.orElse("0"))) {
+                    criteriaBuilder.append(" desc");
+                }
+                criteriaBuilder.append(" ,");
+            }
+        } else {
+            //设置默认排序项
+            criteriaBuilder.append("domain_domain,");
+        }
+        criteriaBuilder.setLength(criteriaBuilder.length() - 1);
+        return criteriaBuilder.toString();
     }
 
     @Override
@@ -294,7 +319,8 @@ public  class DomainServiceImpl implements DomainService {
         titlelist.add("domainMaxUsers");
         titlelist.add("domainAdmin");
 
-        String path = ExcelUtils.createMapListExcel(list, fileDiskPath, titlelist);
+        String diskPath = "D:/test/";
+        String path = ExcelUtils.createMapListExcel(list, diskPath, titlelist);
         FileUtils fileUtils = new FileUtils();
         fileUtils.downLoad(path);
 
@@ -304,33 +330,7 @@ public  class DomainServiceImpl implements DomainService {
 
     }
 
-    /**
-     * 获取排序条件字符串
-     *
-     * @param criteriaList 排序列表
-     * @return 排序后的字符
-     * @author john.xiao
-     * @date 2020-12-17 11-27
-     */
-    private String getSortString(List<Map<String, Object>> criteriaList) {
-        StringBuilder criteriaBuilder = new StringBuilder();
-        if (criteriaList.size() > 0) {
-            for (int i = 0; i < criteriaList.size(); i++) {
-                Map<String, Object> listMap = (Map<String, Object>) criteriaList.get(i);
-                Optional<Object> sort = Optional.ofNullable(listMap.get("sort"));
-                Optional<Object> criteria = Optional.ofNullable(listMap.get("criteria"));
-                criteriaBuilder.append(criteria.orElse("domain"));
-                if (!"0".equals(sort.orElse("0"))) {
-                    criteriaBuilder.append(" desc");
-                }
-                criteriaBuilder.append(" ,");
-            }
-        } else {
-            criteriaBuilder.append("domain_domain,");
-        }
-        criteriaBuilder.setLength(criteriaBuilder.length() - 1);
-        return criteriaBuilder.toString();
-    }
+
 
     /**
      * 判断作用域是否存在
@@ -378,42 +378,59 @@ public  class DomainServiceImpl implements DomainService {
     }
 
 
+
     /**
      * 更新用户域信息
      */
     @Override
-    public ResultUtil updateUserDomain(String user, List <DomainMstr>domainMstr) {
+    public ResultUtil updateUserDomain(DomainMstr domainMstr,String user) {
         String message;
-        String deleteSql = "delete from userdomain_ref where userdomain_userid = '"+user+"';";
-        ResultUtil deleteResult = dbHelperService.delete(deleteSql,DATASOURCE_POSTGRES);
-        if(!SUCCESS_CODE.equals(deleteResult.get(CODE).toString())){
-            message = MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_ERROR.getCode());
+        boolean domainExist = checkDomainExist(domainMstr.getDomainDomain());
+        if(!domainExist){
+            message = MessageUtil.getMessage(DomainMessage.DOMAIN_NOT_EXIST.getCode());
+            logger.warn(domainMstr.getDomainDomain()+": "+message);
+            return ResultUtil.error(message,Thread.currentThread().getStackTrace()[1].getMethodName());
+        }
+        String addSql ="insert into userdomain_ref(userdomain_userid,userdomain_corp,userdomain_domain) " +
+                "values ('"+user+"','"+domainMstr.getDomainCorp()+"','"+domainMstr.getDomainDomain()+"')";
+        ResultUtil resultadd = dbHelperService.update(addSql,DATASOURCE_POSTGRES);
+        if(!SUCCESS_CODE.equals(resultadd.get(CODE).toString())){
+            message=MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_ERROR.getCode());
             logger.error(message);
-            return ResultUtil.error(message);
+            return ResultUtil.error(message,Thread.currentThread().getStackTrace()[1].getMethodName());
         }
-        StringBuilder stringBuilder=new StringBuilder();
-        for (int i = 0; i < domainMstr.size(); i++) {
-            Map<String,Object> listMap= (Map<String, Object>) domainMstr.get(i);
-            Optional<String> domainDomain = Optional.ofNullable(listMap.get("domain").toString());
-            Optional<String> domainCorp= Optional.ofNullable(listMap.get("domainCorp").toString());
-            stringBuilder.append("('"+user+"','"+domainCorp.orElse("")+"','"+domainDomain.orElse("")+"'),");
-            ((Map<String, Object>) domainMstr.get(i)).put("result","数据添加成功");
-        }
-        //删除最后一个,
-        stringBuilder.setLength(stringBuilder.length()-1);
-        String addSql="insert into userdomain_ref(userdomain_userid,userdomain_corp,userdomain_domain) values "+stringBuilder.toString()+"";
-        ResultUtil addResult=dbHelperService.insert(addSql,DATASOURCE_POSTGRES);
-        if(HttpStatus.OK.value()!= (int)addResult.get("code")){
-            message= MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_ERROR.getCode());
-            logger.error(message);
-            return ResultUtil.error(message);
-        }
-        message= MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_SUCCESS.getCode());
-        logger.info(message);
+        message=MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_SUCCESS.getCode());
+
         return ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName());
     }
+
+    /**
+     * 批量更新用户域信息
+     * @param domainMstrList 域信息列表
+     * @param user 用户名
+     * @return
+     */
+    @Override
+    public ResultUtil updateUserDomainList(List<DomainMstr> domainMstrList, String user) {
+        List<Map<String,Object>> resultList = new ArrayList<>(domainMstrList.size());
+        String message;
+        String deleteSql = "delete from userdomain_ref where userdomain_userid = '"+user+"';";
+        ResultUtil resultupdate = dbHelperService.update(deleteSql,DATASOURCE_POSTGRES);
+        if(!SUCCESS_CODE.equals(resultupdate.get(CODE).toString())){
+            message = MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_ERROR.getCode());
+            logger.error(message);
+            return ResultUtil.error(message,Thread.currentThread().getStackTrace()[1].getMethodName());
+        }
+
+        for(int i = 0; i < domainMstrList.size(); i++){
+            ResultUtil result = updateUserDomain(domainMstrList.get(i),user);
+            Map<String,Object> resultMap = new HashMap<>();
+            resultMap.put(domainMstrList.get(i).getDomainDomain(),result);
+            resultList.add(resultMap);
+        }
+        message = MessageUtil.getMessage(DomainMessage.DOMAIN_UPDATE_SUCCESS.getCode());
+        return  ResultUtil.ok(message,Thread.currentThread().getStackTrace()[1].getMethodName()).setData(resultList);
+    }
 }
-
-
 
 
