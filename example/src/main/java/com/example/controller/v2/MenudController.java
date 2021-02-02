@@ -32,10 +32,10 @@ public class MenudController {
      * @date 2020-10-13 17:06
      */
     @GetMapping("/menud")
-    public ResultUtil getMenudListPage(@RequestParam(value = "menudSelect",required = false,defaultValue = "")String menuSelect,
-                                       @RequestParam(value = "menudCorp",required = false,defaultValue = "")String menuCorp,
-                                       @RequestParam(value = "menudNbr",required = false,defaultValue = "")String menuNbr,
-                                       @RequestParam(value = "menudLang",required = false,defaultValue = "")String menuLang,
+    public ResultUtil getMenudListPage(@RequestParam(value = "menuSelect",required = false,defaultValue = "")String menuSelect,
+                                       @RequestParam(value = "menuCorp",required = false,defaultValue = "")String menuCorp,
+                                       @RequestParam(value = "menuNbr",required = false,defaultValue = "")String menuNbr,
+                                       @RequestParam(value = "menuLang",required = false,defaultValue = "")String menuLang,
                                        @RequestParam(value = "pageIndex",required = false,defaultValue = "1")int pageIndex,
                                        @RequestParam(value = "pageSize",required = false,defaultValue = "10")int pageSize,
                                        @RequestParam(value = "criteriaList",required = false,defaultValue = "[]")String criteriaList){
@@ -127,20 +127,20 @@ public class MenudController {
     /**
      * 导出菜单标签信息
      *
-     * @param menudCorp
-     * @param menudNbr
-     * @param menudSelect
-     * @param menudLang
+     * @param menuCorp
+     * @param menuNbr
+     * @param menuSelect
+     * @param menuLang
      * @return 结果封装类
      * @author
      * @date
      */
     @GetMapping("deriveMenud")
-    public void deriveCorp(@RequestParam("menudCorp") String menudCorp,
-                                 @RequestParam("menudNbr") String menudNbr,
-                                 @RequestParam("menudSelect") String menudSelect,
-                                 @RequestParam("menudLang") String menudLang) {
-         menudService.deriveMenud(menudCorp, menudNbr,menudSelect,menudLang);
+    public void deriveCorp(@RequestParam("menuCorp") String menuCorp,
+                                 @RequestParam("menuNbr") String menuNbr,
+                                 @RequestParam("menuSelect") String menuSelect,
+                                 @RequestParam("menuLang") String menuLang) {
+         menudService.deriveMenud(menuCorp, menuNbr,menuSelect,menuLang);
     }
 
     /**

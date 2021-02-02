@@ -72,13 +72,13 @@ public interface MenudService {
     /**
      * 导出菜单标签信息
      *
-     * @param menudCorp
-     * @param menudNbr
-     * @param menudSelect
-     * @param menudLang
+     * @param menuCorp
+     * @param menuNbr
+     * @param menuSelect
+     * @param menuLang
      * @return 结果封装类
      * @author
      * @date
      */
-    void deriveMenud(String menudCorp, String menudNbr, String menudSelect, String menudLang);
+    void deriveMenud(String menuCorp, String menuNbr, String menuSelect, String menuLang);
 }
