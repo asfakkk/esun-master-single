@@ -193,6 +193,10 @@ public class MenudServiceImpl implements MenudService {
             ResultUtil result = deleteMenudInfo(menudDet);
             menudDet.setResult(result.get("msg").toString());
             menudDet.setCode(result.get("code").toString());
+            if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
+                message = MessageUtil.getMessage(Message.DELIVERY_DELETE_ERROR.getCode());
+                return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+            }
         }
         message = MessageUtil.getMessage(Message.DELIVERY_DELETE_SUCCESS.getCode());
         return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(menudDetList);
@@ -241,6 +245,10 @@ public class MenudServiceImpl implements MenudService {
             ResultUtil result = updateMenudInfo(menudDet);
             menudDet.setResult(result.get("msg").toString());
             menudDet.setCode(result.get("code").toString());
+            if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
+                message = MessageUtil.getMessage(Message.DELIVERY_UPDATE_ERROR.getCode());
+                return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+            }
         }
         message = MessageUtil.getMessage(Message.DELIVERY_UPDATE_SUCCESS.getCode());
         return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(menudDetList);
