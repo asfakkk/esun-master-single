@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController("DomainV2Controller")
-@RequestMapping("v2/domainManager")
+@RequestMapping("v2/domainManage")
 public class DomainController {
     @Resource(name = "DomainV2Service")
     DomainService domainService;
@@ -133,7 +133,7 @@ public class DomainController {
      */
     @GetMapping("template")
     public void getTemplate(){
-        String path="E:/template/domain.xls";
+        String path="D:/template/domain.xls";
         FileUtils fileUtils=new FileUtils();
         fileUtils.downLoad(path);
     }
