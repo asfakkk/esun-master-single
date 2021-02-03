@@ -9,6 +9,7 @@ import com.example.exception.CustomHttpException;
 import com.example.service.feign.DbHelperService;
 import com.example.service.v2.MenuService;
 import com.example.utils.*;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import sun.awt.SunHints;
 
 import java.util.*;
 
@@ -38,7 +40,8 @@ public class MenuServiceImpl implements MenuService {
 	@Autowired
 	@Lazy
 	DbHelperService dbHelperService;
-
+@Autowired
+MenuService menuService;
 	/**
 	 * 分页模糊查询
 	 * 该接口不进行递归处理
@@ -423,23 +426,44 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ResultUtil getRoleMenuInfoList(String roleName) {
-		String sql = "select distinct guid,menu_corp as \"menuCorp\",menud_nbr as \"menuNbr\",menu_select as \"menuSelect\",menu_program as \"menuProgram\",menu_name as \"menuName\" " +
+		String sqlMenu = "select guid,menu_corp as \"menuCorp\" ,menu_nbr as \"menuNbr\" ,menu_select as \"menuSelect\" ," +
+				"menu_program as \"menuProgram\" ,menu_name as \"menuName\", menu_mod_date as \"menuModDate\" " +
+				"from menu_mstr ";
+		String sqlRoleMenu = "select distinct guid,menu_corp as \"menuCorp\",menu_nbr as \"menuNbr\",menu_select as \"menuSelect\",menu_program as \"menuProgram\",menu_name as \"menuName\" " +
 				"    from menu_mstr ms\n" +
-				"    left join menud_det md on ms.menu_nbr = md.menud_nbr and ms.menu_select = md.menud_select\n" +
 				"    left join roled_det rd on ms.menu_nbr = rd.roled_nbr and ms.menu_select = rd.roled_select\n" +
 				"where lower(rd.roled_role) = lower('" + roleName + "')";
 		String message;
-		ResultUtil result = dbHelperService.select(sql, DATASOURCE_POSTGRES);
-		if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
+		ResultUtil resultMenu = dbHelperService.select(sqlMenu, DATASOURCE_POSTGRES);
+		ResultUtil resultRoleMenu = dbHelperService.select(sqlRoleMenu, DATASOURCE_POSTGRES);
+		if (!SUCCESS_CODE.equals(resultMenu.get(CODE).toString())) {
 			message = MessageUtil.getMessage(MenuMessage.MENU_GET_ERROR.getCode());
 			logger.error(message);
 			return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
 		}
-		List<HashMap<String, Object>> list = (ArrayList<HashMap<String, Object>>) result.get("result");
-		list = treeMenu(list);
+		List<HashMap<String, Object>> listMenu = (ArrayList<HashMap<String, Object>>) resultMenu.get("result");
+		if (!SUCCESS_CODE.equals(resultMenu.get(CODE).toString())) {
+			message = MessageUtil.getMessage(MenuMessage.MENU_GET_ERROR.getCode());
+			logger.error(message);
+			return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+		}
+		List<HashMap<String, Object>> listRoleMenu = (ArrayList<HashMap<String, Object>>) resultRoleMenu.get("result");
+a:			for (int i = 0; i < listMenu.size() ; i++) {
+			Object listMenuNbr=listMenu.get(i).get("menuNbr");
+			Object listMenuSelect=listMenu.get(i).get("menuSelect");
+			for (int j = 0; j < listRoleMenu.size(); j++) {
+				if(listMenuNbr.equals(listRoleMenu.get(j).get("menuNbr")) && listMenuSelect.equals(listRoleMenu.get(j).get("menuSelect"))) {
+					listMenu.get(i).put("isExist", true);
+					continue  a;
+				}
+			}
+			listMenu.get(i).put("isExist", false);
+
+		}
+		listMenu = treeMenu(listMenu);
 		Map<String, Object> dataMap = new HashMap<>(2);
 		//获取总条数
-		dataMap.put("list", list);
+		dataMap.put("list", listMenu);
 		message = MessageUtil.getMessage(MenuMessage.MENU_GET_SUCCESS.getCode());
 		logger.info(message);
 		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(dataMap);
@@ -455,25 +479,48 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ResultUtil getUserMenuInfoList(String userUserId) {
-		String sql = "select distinct menud_nbr as \"menuNbr\",menu_select as \"menuSelect\",menu_program as \"menuProgram\",pgrm_url as \"programUrl\",menud_label as \"menuLabel\",menu_name as \"menuName\" from menu_mstr ms\n" +
-				"    left join menud_det md on ms.menu_nbr = md.menud_nbr and ms.menu_select = md.menud_select\n" +
+		String sqlMenu = "select guid,menu_corp as \"menuCorp\" ,menu_nbr as \"menuNbr\" ,menu_select as \"menuSelect\" ," +
+				"menu_program as \"menuProgram\" ,menu_name as \"menuName\", menu_mod_date as \"menuModDate\" " +
+				"from menu_mstr ";
+		String sqlUserMenu = "select distinct guid,menu_corp as \"menuCorp\",menu_nbr as \"menuNbr\",menu_select as \"menuSelect\",menu_program as \"menuProgram\",menu_name as \"menuName\" " +
+				"    from menu_mstr ms\n" +
 				"    left join roled_det rd on ms.menu_nbr = rd.roled_nbr and ms.menu_select = rd.roled_select\n" +
-				"where  rd.roled_role in (\n" +
-				"    select ud.userd_role from  userd_det ud\n" +
-				"    where  lower(ud.userd_userid ) = lower('" + userUserId + "')\n" +
-				"    )";
+				"    left join userd_det ud on rd.roled_role = ud.userd_role \n" +
+				"    where  lower(ud.userd_userid ) = lower('" + userUserId + "')";
 		String message;
-		ResultUtil result = dbHelperService.select(sql, DATASOURCE_POSTGRES);
-		if (!SUCCESS_CODE.equals(result.get(CODE).toString())) {
+		ResultUtil resultMenu = dbHelperService.select(sqlMenu, DATASOURCE_POSTGRES);
+		ResultUtil resultRoleMenu = dbHelperService.select(sqlUserMenu, DATASOURCE_POSTGRES);
+
+		if (!SUCCESS_CODE.equals(resultMenu.get(CODE).toString())) {
 			message = MessageUtil.getMessage(MenuMessage.MENU_GET_ERROR.getCode());
 			logger.error(message);
 			return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
 		}
-		List<HashMap<String, Object>> list = (ArrayList<HashMap<String, Object>>) result.get("result");
-		list = treeMenu(list);
+		List<HashMap<String, Object>> listMenu = (ArrayList<HashMap<String, Object>>) resultMenu.get("result");
+
+		if (!SUCCESS_CODE.equals(resultRoleMenu.get(CODE).toString())) {
+			message = MessageUtil.getMessage(MenuMessage.MENU_GET_ERROR.getCode());
+			logger.error(message);
+			return ResultUtil.error(message, Thread.currentThread().getStackTrace()[1].getMethodName());
+		}
+		List<HashMap<String, Object>> listRoleMenu = (ArrayList<HashMap<String, Object>>) resultRoleMenu.get("result");
+
+a:		for (int i = 0; i < listMenu.size() ; i++) {
+			Object listMenuNbr=listMenu.get(i).get("menuNbr");
+			Object listMenuSelect=listMenu.get(i).get("menuSelect");
+			for (int j = 0; j < listRoleMenu.size(); j++) {
+				if(listMenuNbr.equals(listRoleMenu.get(j).get("menuNbr")) && listMenuSelect.equals(listRoleMenu.get(j).get("menuSelect"))) {
+					listMenu.get(i).put("isExist", true);
+					continue  a;
+				}
+			}
+			listMenu.get(i).put("isExist", false);
+
+		}
+		listMenu = treeMenu(listMenu);
 		Map<String, Object> dataMap = new HashMap<>(2);
 		//获取总条数
-		dataMap.put("list", list);
+		dataMap.put("list", listMenu);
 		message = MessageUtil.getMessage(MenuMessage.MENU_GET_SUCCESS.getCode());
 		logger.info(message);
 		return ResultUtil.ok(message, Thread.currentThread().getStackTrace()[1].getMethodName()).setData(dataMap);
