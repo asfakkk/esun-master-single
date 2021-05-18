@@ -22,6 +22,9 @@ public class PoiUtils {
      */
     public static Object getCellValue(Cell cell) {
         Object data = "";
+        if(cell == null){
+            return null;
+        }
         int cellType = cell.getCellType();
         if (cellType == Cell.CELL_TYPE_NUMERIC) {
             data = cell.getNumericCellValue();
@@ -40,6 +43,9 @@ public class PoiUtils {
      */
     public static String getCellValueString(Cell cell) {
         Object data = "";
+        if(cell == null){
+            return null;
+        }
         int cellType = cell.getCellType();
         if (cellType == Cell.CELL_TYPE_NUMERIC) {
             data = cell.getNumericCellValue();

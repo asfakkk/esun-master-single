@@ -24,8 +24,8 @@ import java.util.Optional;
 /**
  * 系统切面类
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class SystemAspect {
     /**
      * 日志声明
@@ -38,7 +38,6 @@ public class SystemAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         signature=(MethodSignature)proceedingJoinPoint.getSignature();
-//        MethodSignature signature=(MethodSignature)proceedingJoinPoint.getSignature();
         Method method=signature.getMethod();
 //        检测是否有name参数
 
